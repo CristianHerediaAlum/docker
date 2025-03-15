@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - mariadb_data:/var/lib/mysql  # Ruta donde se guardan las bases de datos
+    networks:
+      - redDocker
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_container
+    ports:
+      - "82:80"
+    depends_on:
+      - mariadb
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    volumes:
+      - wordpress_data:/var/www/html # Ruta donde se guarda el código fuente
+    networks:
+      - redDocker
+
+volumes:
+  mariadb_data:
+  wordpress_data:
+
+networks:
+  redDocker:
